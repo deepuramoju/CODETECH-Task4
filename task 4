@@ -1,0 +1,36 @@
+# 📌 Step 1: Import PuLP
+import pulp
+
+# 📌 Step 2: Initialize the Linear Programming Problem
+# We're maximizing profit, so we use LpMaximize
+model = pulp.LpProblem("Maximize_Factory_Profit", pulp.LpMaximize)
+
+# 📌 Step 3: Define Decision Variables
+# Product_A (x) and Product_B (y), both ≥ 0
+x = pulp.LpVariable('Product_A', lowBound=0, cat='Continuous')
+y = pulp.LpVariable('Product_B', lowBound=0, cat='Continuous')
+
+# 📌 Step 4: Define Objective Function
+# Maximize Profit: 40x + 30y
+model += 40 * x + 30 * y, "Total_Profit"
+
+# 📌 Step 5: Define Constraints
+# Machine 1 time: 2x + 1y ≤ 100
+# Machine 2 time: 1x + 1y ≤ 80
+model += 2 * x + 1 * y <= 100, "Machine_1_Time"
+model += 1 * x + 1 * y <= 80, "Machine_2_Time"
+
+# 📌 Step 6: Solve the Problem
+model.solve()
+
+# 📌 Step 7: Output the Results
+print("✅ Status:", pulp.LpStatus[model.status])
+print("📦 Optimal Units of Product A:", x.varValue)
+print("📦 Optimal Units of Product B:", y.varValue)
+print("💰 Maximum Profit: $", pulp.value(model.objective))
+
+## output:
+✅ Status: Optimal
+📦 Optimal Units of Product A: 30.0
+📦 Optimal Units of Product B: 50.0
+💰 Maximum Profit: $ 2900.0
